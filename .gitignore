@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django generated files
+*.log
+*.pot
+*.pyc
+db.sqlite3
+/media
+/static
+
+# Local development settings
+local_settings.py
+
+# Environment variables
+.env
+
+# Dependency directories
+venv/
+env/
+env.bak/
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Compiled Python bytecode
+*.pyc
+*.pyo
+*.pyd
+
+# macOS specific files
+.DS_Store
+
+# Editor backup files
+*~
+
+# Database configuration
+*.db
