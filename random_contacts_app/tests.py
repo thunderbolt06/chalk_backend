@@ -8,7 +8,7 @@ from .models import MyUser
 from .views import RegistrationView
 
 factory = APIRequestFactory()
-user = MyUser.objects.get(email='asdfg@as.in')
+user = MyUser.objects.get(phone='asdfg@as.in')
 view = RegistrationView.as_view()
 
 # Make an authenticated request to the view...

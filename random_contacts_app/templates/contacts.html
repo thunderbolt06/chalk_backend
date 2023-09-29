@@ -3,8 +3,8 @@
   {% for contact in contacts %}
   <li>
     <strong>{{ contact.names[0].displayName }}</strong>
-    {% if contact.emailAddresses %}
-      <p>{{ contact.emailAddresses[0].value }}</p>
+    {% if contact.phoneAddresses %}
+      <p>{{ contact.phoneAddresses[0].value }}</p>
     {% endif %}
   </li>
   {% endfor %}
