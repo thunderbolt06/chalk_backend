@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import Contact, MyUser
+from .models import Connection, Contact, MyUser
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -57,4 +57,15 @@ class ContactsSerializer(serializers.Serializer):
     
 class TopContactsSerializer(serializers.Serializer):
     fromPhone = serializers.CharField(style={"input_type": "fromPhone"}, required=True)
+
+class ConnectionSerializer(serializers.Serializer):
+    fromPhone = serializers.CharField(style={"input_type": "fromPhone"}, required=True)
+    toPhone = serializers.CharField(style={"input_type": "toPhone"}, required=True)
+    fromStatus = serializers.CharField(style={"input_type": "fromStatus"}, required=True)
+    toStatus = serializers.CharField(style={"input_type": "toStatus"}, required=True)
+    isActive = serializers.BooleanField(style={"input_type": "isActive"}, required=True)
+
+    class Meta:
+        model = Connection
+        fields = ['fromPhone', 'toPhone', 'fromStatus', 'toStatus', 'isActive']
 

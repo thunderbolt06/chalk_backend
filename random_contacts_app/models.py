@@ -1,5 +1,6 @@
 
 import datetime
+import json
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import (
@@ -48,9 +49,14 @@ class Contact(models.Model):
 class Connection(models.Model):
     fromPhone = models.CharField(max_length=255,)
     toPhone = models.CharField(max_length=255,)
+    fromStatus = models.CharField(default="accepting", max_length=255)
+    toStatus = models.CharField(default="accepting", max_length=255)
     isActive = models.BooleanField(default=False)
     def __str__(self):
         return self.fromPhone
+
+    def toJSON(self):
+        return json.dumps(self.__dict__)
 
 class MyUser(AbstractBaseUser):
     phone = models.CharField(

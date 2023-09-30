@@ -55,10 +55,6 @@ class ChangePasswordView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
-
-
-      
 class ContactView(APIView):
     def post(self, request):
         isList = False
@@ -83,10 +79,17 @@ class ContactView(APIView):
 class UserStatusView(APIView):
     def get(self, request):
         phone = request.query_params.get("phone")
-        if MyUser.objects.filter(phone=str(phone)).exists():
-            user = MyUser.objects.filter(phone=str(phone))
-            return Response(getattr(user[0],"status"), status=status.HTTP_200_OK)
-        return Response("Couldn't find user", status=status.HTTP_404_NOT_FOUND)
+        if(phone):
+            if MyUser.objects.filter(phone=str(phone)).exists():
+                user = MyUser.objects.filter(phone=str(phone))
+                return Response(user.values()[0], status=status.HTTP_200_OK)
+        else:
+            status1 = request.query_params.get("status")
+            if(status1):
+                print(status1)
+                return Response(MyUser.objects.filter(status=status1).values(), status=status.HTTP_200_OK)
+        return Response("Couldn't find response", status=status.HTTP_404_NOT_FOUND)
+            
     
     def post(self, request):
         phone = request.query_params.get("phone")
@@ -101,33 +104,38 @@ class UserStatusView(APIView):
 class ConnectionView(APIView):
     def get(self, request):
         fromPhone = request.query_params.get("fromPhone")
-        isActive = request.query_params.get("isActive")
-        a = Connection.objects.filter(fromPhone=fromPhone, isActive=isActive).exists()
-        b = Connection.objects.filter(toPhone=fromPhone, isActive=isActive).exists()
+        a = Connection.objects.filter(fromPhone=fromPhone, isActive=True).exists()
+        b = Connection.objects.filter(toPhone=fromPhone, isActive=True).exists()
         connection = object()
         if (a):
-            connection = Connection.objects.filter(fromPhone=fromPhone, isActive=isActive)
+            connection = Connection.objects.filter(fromPhone=fromPhone, isActive=True)
         elif (b):
-            connection = Connection.objects.filter(toPhone=fromPhone, isActive=isActive)
+            connection = Connection.objects.filter(toPhone=fromPhone, isActive=True)
         else :
             return Response("Couldn't find user", status=status.HTTP_404_NOT_FOUND)
-        return Response(getattr(connection[0], "toPhone"), status=status.HTTP_200_OK)
+        if(connection.count() == 0):
+            return Response("No connections found", status=status.HTTP_404_NOT_FOUND)
+        return Response(connection.values()[0], status=status.HTTP_200_OK)
 
     def post(self, request):
         fromPhone = request.query_params.get("fromPhone")
         toPhone = request.query_params.get("toPhone")
         isActive = request.query_params.get("isActive")
+        fromStatus = request.query_params.get("fromStatus")
+        toStatus = request.query_params.get("toStatus")
         a = Connection.objects.filter(fromPhone=fromPhone, toPhone=toPhone).exists()
         b = Connection.objects.filter(toPhone=fromPhone, fromPhone=toPhone).exists()
         if a:
             connection = Connection.objects.filter(fromPhone=fromPhone, toPhone=toPhone)
-            connection.update(isActive=isActive)
+            connection.update(isActive=isActive, fromStatus=fromStatus, toStatus=toStatus)
         elif b:
             connection = Connection.objects.filter(toPhone=fromPhone, fromPhone=toPhone)
-            connection.update(isActive=isActive)
+            connection.update(isActive=isActive, fromStatus=toStatus, toStatus = fromStatus)
         else :
-            connection = Connection(fromPhone=fromPhone, toPhone=toPhone, isActive=isActive)
+            connection = Connection(fromPhone=fromPhone, toPhone=toPhone, isActive=isActive, fromStatus = fromStatus, toStatus = toStatus)
             connection.save()
         return Response("Sucess", status=status.HTTP_200_OK)
+    
+
     
         
