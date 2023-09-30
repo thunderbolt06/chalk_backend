@@ -51,7 +51,8 @@ class ContactsSerializer(serializers.Serializer):
 
     def create(self):
         contact = Contact(**self.validated_data)
-        contact.save()
+        if not Contact.objects.filter(**self.validated_data).exists():
+            contact.save()
         return contact
     
 class TopContactsSerializer(serializers.Serializer):
