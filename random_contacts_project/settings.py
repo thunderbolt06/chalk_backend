@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-y&3vqq$s!wv#ta3(i1!4%!$uxf0jf%922@%y6-e3rzg!trwoel
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['00.00.00.00', 'chalkapi.azurewebsites.net']
+ALLOWED_HOSTS = ['00.00.00.00', 'chalkapi.azurewebsites.net', '*']
 
 
 # Application definition
