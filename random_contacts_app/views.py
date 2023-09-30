@@ -101,14 +101,14 @@ class UserStatusView(APIView):
 class ConnectionView(APIView):
     def get(self, request):
         fromPhone = request.query_params.get("fromPhone")
-        status1 = request.query_params.get("status")
-        a = Connection.objects.filter(fromPhone=fromPhone, status=status1).exists()
-        b = Connection.objects.filter(toPhone=fromPhone, status=status1).exists()
+        isActive = request.query_params.get("isActive")
+        a = Connection.objects.filter(fromPhone=fromPhone, isActive=isActive).exists()
+        b = Connection.objects.filter(toPhone=fromPhone, isActive=isActive).exists()
         connection = object()
         if (a):
-            connection = Connection.objects.filter(fromPhone=fromPhone, status=status1)
+            connection = Connection.objects.filter(fromPhone=fromPhone, isActive=isActive)
         elif (b):
-            connection = Connection.objects.filter(toPhone=fromPhone, status=status1)
+            connection = Connection.objects.filter(toPhone=fromPhone, isActive=isActive)
         else :
             return Response("Couldn't find user", status=status.HTTP_404_NOT_FOUND)
         return Response(getattr(connection[0], "toPhone"), status=status.HTTP_200_OK)
@@ -116,17 +116,17 @@ class ConnectionView(APIView):
     def post(self, request):
         fromPhone = request.query_params.get("fromPhone")
         toPhone = request.query_params.get("toPhone")
-        status1 = request.query_params.get("status")
+        isActive = request.query_params.get("isActive")
         a = Connection.objects.filter(fromPhone=fromPhone, toPhone=toPhone).exists()
         b = Connection.objects.filter(toPhone=fromPhone, fromPhone=toPhone).exists()
         if a:
             connection = Connection.objects.filter(fromPhone=fromPhone, toPhone=toPhone)
-            connection.update(isActive=status1)
+            connection.update(isActive=isActive)
         elif b:
             connection = Connection.objects.filter(toPhone=fromPhone, fromPhone=toPhone)
-            connection.update(isActive=status1)
+            connection.update(isActive=isActive)
         else :
-            connection = Connection(fromPhone=fromPhone, toPhone=toPhone, isActive=status1)
+            connection = Connection(fromPhone=fromPhone, toPhone=toPhone, isActive=isActive)
             connection.save()
         return Response("Sucess", status=status.HTTP_200_OK)
     
