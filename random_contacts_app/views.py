@@ -97,7 +97,7 @@ class UserStatusView(APIView):
         if MyUser.objects.filter(phone=str(phone)).exists():
             user = MyUser.objects.filter(phone=str(phone))
             user.update(status=status1)
-            return Response("Success", status=status.HTTP_200_OK)
+            return Response("Successfully updated user", status=status.HTTP_200_OK)
         
         return Response("Couldn't find user", status=status.HTTP_404_NOT_FOUND)
     
@@ -134,7 +134,7 @@ class ConnectionView(APIView):
         else :
             connection = Connection(fromPhone=fromPhone, toPhone=toPhone, isActive=isActive, fromStatus = fromStatus, toStatus = toStatus)
             connection.save()
-        return Response("Sucess", status=status.HTTP_200_OK)
+        return Response("Successfully updated Connection", status=status.HTTP_200_OK)
     
 
     
