@@ -8,8 +8,8 @@ from rest_framework.response import  Response
 from rest_framework.views import APIView
 from .utils import get_tokens_for_user
 from .serializers import ContactsSerializer, RegistrationSerializer, PasswordChangeSerializer, TopContactsSerializer
-
-from .models import Contact, MyUser
+import json
+from .models import Connection, Contact, MyUser
 
 class RegistrationView(APIView):
     def post(self, request):
@@ -59,7 +59,7 @@ class ChangePasswordView(APIView):
 
 
       
-class Contacts(APIView):
+class ContactView(APIView):
     def post(self, request):
         isList = False
         if isinstance(request.data, list):
@@ -79,3 +79,55 @@ class Contacts(APIView):
         def post(self, request):
             topContacts = Contact.objects.filter(fromPhone=request.data['fromPhone']).order_by('-dist')[:5]
             return Response(topContacts.values(), status=status.HTTP_200_OK)
+        
+class UserStatusView(APIView):
+    def get(self, request):
+        phone = request.query_params.get("phone")
+        if MyUser.objects.filter(phone=str(phone)).exists():
+            user = MyUser.objects.filter(phone=str(phone))
+            return Response(getattr(user[0],"status"), status=status.HTTP_200_OK)
+        return Response("Couldn't find user", status=status.HTTP_404_NOT_FOUND)
+    
+    def post(self, request):
+        phone = request.query_params.get("phone")
+        status1 = request.query_params.get("status")
+        if MyUser.objects.filter(phone=str(phone)).exists():
+            user = MyUser.objects.filter(phone=str(phone))
+            user.update(status=status1)
+            return Response("Success", status=status.HTTP_200_OK)
+        
+        return Response("Couldn't find user", status=status.HTTP_404_NOT_FOUND)
+    
+class ConnectionView(APIView):
+    def get(self, request):
+        fromPhone = request.query_params.get("fromPhone")
+        status1 = request.query_params.get("status")
+        a = Connection.objects.filter(fromPhone=fromPhone, status=status1).exists()
+        b = Connection.objects.filter(toPhone=fromPhone, status=status1).exists()
+        connection = object()
+        if (a):
+            connection = Connection.objects.filter(fromPhone=fromPhone, status=status1)
+        elif (b):
+            connection = Connection.objects.filter(toPhone=fromPhone, status=status1)
+        else :
+            return Response("Couldn't find user", status=status.HTTP_404_NOT_FOUND)
+        return Response(getattr(connection[0], "toPhone"), status=status.HTTP_200_OK)
+
+    def post(self, request):
+        fromPhone = request.query_params.get("fromPhone")
+        toPhone = request.query_params.get("toPhone")
+        status1 = request.query_params.get("status")
+        a = Connection.objects.filter(fromPhone=fromPhone, toPhone=toPhone).exists()
+        b = Connection.objects.filter(toPhone=fromPhone, fromPhone=toPhone).exists()
+        if a:
+            connection = Connection.objects.filter(fromPhone=fromPhone, toPhone=toPhone)
+            connection.update(isActive=status1)
+        elif b:
+            connection = Connection.objects.filter(toPhone=fromPhone, fromPhone=toPhone)
+            connection.update(isActive=status1)
+        else :
+            connection = Connection(fromPhone=fromPhone, toPhone=toPhone, isActive=status1)
+            connection.save()
+        return Response("Sucess", status=status.HTTP_200_OK)
+    
+        

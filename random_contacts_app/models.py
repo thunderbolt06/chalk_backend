@@ -42,16 +42,30 @@ class Contact(models.Model):
     fromPhone = models.CharField(max_length=255,)
     toPhone = models.CharField(max_length=255,)
     dist = models.IntegerField(default=0)
+    def __str__(self):
+        return self.fromPhone
+
+class Connection(models.Model):
+    fromPhone = models.CharField(max_length=255,)
+    toPhone = models.CharField(max_length=255,)
+    isActive = models.BooleanField(default=False)
+    def __str__(self):
+        return self.fromPhone
 
 class MyUser(AbstractBaseUser):
     phone = models.CharField(
         max_length=255,
         unique=True,
     )
+    name = models.CharField(
+        max_length=255,
+        default="default"
+    )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     credits = models.PositiveIntegerField(default=100)
     expiry_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(default="inactive", max_length=100)
     objects = MyUserManager()
 
     USERNAME_FIELD = 'phone'
