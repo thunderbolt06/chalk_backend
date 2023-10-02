@@ -134,7 +134,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ...
 
-AUTH_USER_MODEL = 'random_contacts_app.MyUser'
+#AUTH_USER_MODEL = 'random_contacts_app.MyUser'
 
 GOOGLE_CLIENT_SECRET_FILE = os.path.join(BASE_DIR, 'google_credentials.json')
 GOOGLE_SCOPES = ['https://www.googleapis.com/auth/contacts.readonly']
